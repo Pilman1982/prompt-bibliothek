@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Prompt-Bibliothek</title>
+  <meta name="description" content="Gemeinsame Bibliothek für interaktive KI-Prompts">
+  <meta name="theme-color" content="#f5f6fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1016" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Prompts">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+  <div id="demoBanner" class="banner" hidden>
+    <strong>Demo-Modus:</strong> Änderungen bleiben nur in diesem Browser. Passwort für den Edit-Modus: <code>demo</code>.
+    <a id="liveLink" href="#" hidden>Zur echten Prompt-Bibliothek</a>
+  </div>
+  <div id="errorBanner" class="banner banner-error" role="alert" hidden></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark"><i data-icon="book"></i></span>
+        <span id="appTitle">Prompt-Bibliothek</span>
+      </div>
+
+      <label class="search">
+        <i data-icon="search"></i>
+        <input id="search" type="search" placeholder="Prompts durchsuchen …" autocomplete="off" aria-label="Prompts durchsuchen">
+        <kbd title="Taste / setzt den Cursor in die Suche">/</kbd>
+      </label>
+
+      <div class="actions">
+        <span id="editBadge" class="edit-badge" hidden>Edit-Modus</span>
+        <button id="btnNew" class="btn btn-primary" type="button" title="Neuer Prompt" aria-label="Neuer Prompt" hidden>
+          <i data-icon="plus"></i><span class="btn-label">Neuer Prompt</span>
+        </button>
+        <div id="menuWrap" class="menu" hidden>
+          <button id="btnMenu" class="btn" type="button" title="Verwaltung" aria-label="Verwaltung" aria-haspopup="menu" aria-expanded="false">
+            <i data-icon="settings"></i><span class="btn-label">Verwaltung</span>
+          </button>
+          <div id="menu" class="menu-pop" role="menu" hidden>
+            <button type="button" role="menuitem" data-menu="export"><i data-icon="download"></i>Backup exportieren (JSON)</button>
+            <button type="button" role="menuitem" data-menu="import"><i data-icon="upload"></i>Backup importieren …</button>
+            <button type="button" role="menuitem" data-menu="samples"><i data-icon="sparkles"></i>Beispiel-Prompts hinzufügen</button>
+            <button type="button" role="menuitem" data-menu="history"><i data-icon="history"></i>Änderungsverlauf auf GitHub</button>
+            <hr>
+            <button type="button" role="menuitem" data-menu="password"><i data-icon="key"></i>Master-Passwort festlegen</button>
+          </div>
+        </div>
+        <button id="btnLock" class="btn btn-ghost" type="button">
+          <i data-icon="lock"></i><span class="btn-label">Bearbeiten</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="filters" aria-label="Filter">
+      <div id="chips" class="chips"></div>
+      <div class="filter-right">
+        <select id="authorFilter" class="select" aria-label="Nach Person filtern"></select>
+        <select id="sortSelect" class="select" aria-label="Sortierung">
+          <option value="title">Titel A–Z</option>
+          <option value="updated">Zuletzt geändert</option>
+        </select>
+      </div>
+    </section>
+    <p id="resultInfo" class="result-info" aria-live="polite"></p>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" hidden></div>
+  </main>
+
+  <input id="importFile" type="file" accept=".json,application/json" hidden>
+  <div id="toasts" class="toasts" popover="manual" aria-live="polite"></div>
+
+  <datalist id="dlCategories"></datalist>
+  <datalist id="dlAuthors"></datalist>
+
+  <!-- Prompt nutzen -->
+  <dialog id="useDialog" class="dlg dlg-wide" aria-labelledby="useTitle">
+    <header class="dlg-head">
+      <div class="dlg-head-main">
+        <div id="useMeta" class="use-meta"></div>
+        <h2 id="useTitle"></h2>
+        <p id="useDesc" class="muted dlg-sub"></p>
+      </div>
+      <button type="button" class="icon-btn" data-close aria-label="Schliessen"><i data-icon="x"></i></button>
+    </header>
+    <div class="dlg-body use-body">
+      <section>
+        <h3 class="section-label">Deine Angaben</h3>
+        <form id="answerForm" class="answers"></form>
+      </section>
+      <section id="resultBox" class="use-result">
+        <div class="result-head">
+          <h3 class="section-label">Mega-Prompt</h3>
+          <div class="result-actions">
+            <button id="shareResult" type="button" class="btn btn-sm" disabled hidden><i data-icon="share"></i>Teilen</button>
+            <button id="copyAgain" type="button" class="btn btn-sm" disabled><i data-icon="copy"></i>Kopieren</button>
+          </div>
+        </div>
+        <textarea id="resultText" aria-label="Erzeugter Mega-Prompt" placeholder="Beantworte die Fragen und klicke auf «Mega-Prompt erstellen». Der fertige Prompt erscheint hier und wird automatisch in die Zwischenablage kopiert. Du kannst ihn hier noch anpassen."></textarea>
+      </section>
+    </div>
+    <footer class="dlg-foot">
+      <button id="useLink" type="button" class="btn btn-ghost" title="Link zu diesem Prompt kopieren" aria-label="Link kopieren"><i data-icon="link"></i><span class="btn-label">Link kopieren</span></button>
+      <button id="useEdit" type="button" class="btn btn-ghost" title="Bearbeiten" aria-label="Bearbeiten" hidden><i data-icon="pencil"></i><span class="btn-label">Bearbeiten</span></button>
+      <span class="spacer"></span>
+      <span class="hint muted"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
+      <button type="submit" form="answerForm" class="btn btn-primary btn-lg"><i data-icon="sparkles"></i>Mega-Prompt erstellen &amp; kopieren</button>
+    </footer>
+  </dialog>
+
+  <!-- Prompt bearbeiten -->
+  <dialog id="editDialog" class="dlg dlg-xl" aria-labelledby="editHeading">
+    <form id="editForm" class="dlg-form" novalidate>
+      <header class="dlg-head">
+        <h2 id="editHeading">Prompt bearbeiten</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Schliessen"><i data-icon="x"></i></button>
+      </header>
+      <div class="dlg-body edit-body">
+        <div class="edit-col">
+          <div class="form-grid">
+            <label class="fl span-2">Titel *
+              <input id="edTitle" data-meta="title" maxlength="120" placeholder="z. B. Lektion planen" autocomplete="off">
+            </label>
+            <label class="fl">Kategorie *
+              <input id="edCategory" data-meta="category" list="dlCategories" maxlength="60" placeholder="z. B. Didaktik" autocomplete="off">
+            </label>
+            <label class="fl">Erstellt von *
+              <input id="edAuthor" data-meta="author" list="dlAuthors" maxlength="80" placeholder="z. B. M. Muster" autocomplete="off">
+            </label>
+            <label class="fl span-2">Kurzbeschreibung
+              <textarea id="edDesc" data-meta="description" rows="2" maxlength="400" placeholder="Wofür ist der Prompt gut? Erscheint auf der Karte."></textarea>
+            </label>
+            <label class="fl span-2">Tags
+              <input id="edTags" data-meta="tags" placeholder="Durch Komma getrennt, z. B. Planung, HF" autocomplete="off">
+            </label>
+          </div>
+
+          <div class="block-head">
+            <label for="edTemplate" class="section-label">Template *</label>
+            <details class="help">
+              <summary>Syntax-Hilfe</summary>
+              <div class="help-pop">
+                <p><code>{{thema}}</code> wird durch die Antwort auf die Frage «thema» ersetzt.</p>
+                <p><code>{{#thema}}</code> … <code>{{/thema}}</code> erscheint nur, wenn die Frage beantwortet wurde. Ideal für optionale Angaben.</p>
+                <p>Namen bestehen aus Buchstaben, Zahlen, <code>_</code> und <code>-</code>, ohne Leerzeichen.</p>
+                <p>Neue Platzhalter werden automatisch als Frage angelegt.</p>
+              </div>
+            </details>
+          </div>
+          <textarea id="edTemplate" class="mono" rows="16" spellcheck="false" placeholder="Du bist {{rolle}}.&#10;&#10;Erstelle … zum Thema «{{thema}}».&#10;{{#einschraenkungen}}&#10;Beachte zwingend: {{einschraenkungen}}&#10;{{/einschraenkungen}}"></textarea>
+          <div id="templateWarn" class="warn-box" hidden></div>
+        </div>
+
+        <div class="edit-col">
+          <div class="block-head">
+            <h3 class="section-label">Fragen <span id="fieldCount" class="count"></span></h3>
+            <button id="addField" type="button" class="btn btn-sm"><i data-icon="plus"></i>Frage</button>
+          </div>
+          <p class="muted small">Jede Frage füllt einen Platzhalter im Template. Reihenfolge hier = Reihenfolge im Formular.</p>
+          <div id="fieldList" class="field-list"></div>
+          <details class="preview" open>
+            <summary class="section-label">Vorschau</summary>
+            <pre id="edPreview"></pre>
+          </details>
+        </div>
+      </div>
+      <footer class="dlg-foot">
+        <div id="editErrors" class="form-error" role="alert"></div>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Abbrechen</button>
+        <button type="submit" class="btn btn-primary"><i data-icon="check"></i>Speichern</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Login -->
+  <dialog id="loginDialog" class="dlg dlg-sm" aria-labelledby="loginHeading">
+    <form id="loginForm" class="dlg-form">
+      <header class="dlg-head">
+        <h2 id="loginHeading">Edit-Modus</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Schliessen"><i data-icon="x"></i></button>
+      </header>
+      <div class="dlg-body stack">
+        <p class="muted">Zum Erstellen, Bearbeiten und Löschen brauchst du das gemeinsame Master-Passwort.</p>
+        <input id="loginUser" type="text" autocomplete="username" class="visually-hidden" tabindex="-1" aria-hidden="true">
+        <label class="fl">Master-Passwort
+          <input id="loginPw" type="password" autocomplete="current-password" required>
+        </label>
+        <label class="check"><input id="loginRemember" type="checkbox">Auf diesem Gerät angemeldet bleiben</label>
+        <p class="muted small">Nur auf dem eigenen Handy oder Laptop, nicht an geteilten Schul-PCs. Beim ersten Mal hier den GitHub-Schlüssel einfügen (siehe Anleitung).</p>
+        <p id="loginError" class="form-error" role="alert"></p>
+      </div>
+      <footer class="dlg-foot">
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Abbrechen</button>
+        <button type="submit" class="btn btn-primary"><i data-icon="unlock"></i>Entsperren</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Passwort ändern -->
+  <dialog id="passwordDialog" class="dlg dlg-sm" aria-labelledby="pwHeading">
+    <form id="passwordForm" class="dlg-form">
+      <header class="dlg-head">
+        <h2 id="pwHeading">Master-Passwort festlegen</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Schliessen"><i data-icon="x"></i></button>
+      </header>
+      <div class="dlg-body stack">
+        <input type="text" autocomplete="username" value="Prompt-Bibliothek" class="visually-hidden" tabindex="-1" aria-hidden="true">
+        <label class="fl">Neues Master-Passwort (mindestens 12 Zeichen)
+          <input id="pwNew" type="password" autocomplete="new-password" minlength="12" required>
+        </label>
+        <label class="fl">Wiederholen
+          <input id="pwNew2" type="password" autocomplete="new-password" minlength="12" required>
+        </label>
+        <p class="muted small">Das Passwort verschlüsselt den GitHub-Schlüssel, mit dem die App speichert. Es gilt nach etwa einer Minute für alle, das bisherige Passwort funktioniert dann nicht mehr. Teile es dem Team mit.</p>
+        <p id="pwError" class="form-error" role="alert"></p>
+      </div>
+      <footer class="dlg-foot">
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Abbrechen</button>
+        <button type="submit" class="btn btn-primary">Festlegen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Import -->
+  <dialog id="importDialog" class="dlg dlg-sm" aria-labelledby="importHeading">
+    <form method="dialog" class="dlg-form">
+      <header class="dlg-head">
+        <h2 id="importHeading">Backup importieren</h2>
+      </header>
+      <div class="dlg-body">
+        <p id="importSummary"></p>
+        <div class="choice"><strong>Zusammenführen:</strong> Neue Prompts kommen dazu, Prompts mit gleicher ID werden überschrieben, alle anderen bleiben.</div>
+        <div class="choice"><strong>Alles ersetzen:</strong> Danach enthält die Datenbank genau den Inhalt der Datei. <span id="importReplaceNote"></span></div>
+      </div>
+      <footer class="dlg-foot">
+        <button value="cancel" class="btn">Abbrechen</button>
+        <span class="spacer"></span>
+        <button value="replace" class="btn btn-danger-ghost">Alles ersetzen</button>
+        <button value="merge" class="btn btn-primary">Zusammenführen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Bestätigung -->
+  <dialog id="confirmDialog" class="dlg dlg-sm" aria-labelledby="confirmText">
+    <form method="dialog" class="dlg-form">
+      <div class="dlg-body confirm-body">
+        <p id="confirmText"></p>
+      </div>
+      <footer class="dlg-foot">
+        <span class="spacer"></span>
+        <button value="cancel" class="btn" id="confirmCancel">Abbrechen</button>
+        <button value="ok" id="confirmOk" class="btn btn-primary">OK</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="config.js?v=2"></script>
+  <script src="engine.js?v=2"></script>
+  <script src="beispiele.js?v=2"></script>
+  <script src="store.js?v=2"></script>
+  <script src="app.js?v=2"></script>
+</body>
+</html>
