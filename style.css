@@ -374,3 +374,15 @@ main { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
   body { -webkit-user-select: none; user-select: none; }
   input, textarea, select, .card-desc, #resultText, .preview pre { -webkit-user-select: text; user-select: text; }
 }
+
+/* Zurück-Knopf oben links in Vollbild-Ansichten */
+.dlg-head { flex-wrap: wrap; }
+.dlg-nav { flex: 0 0 100%; margin: -8px 0 -4px -10px; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 2px; height: 38px; padding: 0 14px 0 6px;
+  border: 0; border-radius: 10px; background: transparent; color: var(--accent);
+  font-weight: 650; font-size: 15.5px; cursor: pointer; transition: background .15s;
+}
+.back-btn:hover { background: var(--accent-soft); }
+.back-btn .ico { width: 22px; height: 22px; stroke-width: 2.4; }
+.answers textarea { overflow-y: hidden; min-height: 76px; }

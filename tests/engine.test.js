@@ -196,3 +196,13 @@ test('Startdaten data/prompts.json sind gültig', () => {
   assert.equal(skipped, 0);
   assert.ok(prompts.length >= 5);
 });
+
+test('render: {{^x}} erscheint nur, wenn die Frage leer blieb', () => {
+  const t = 'A\n{{#text}}\nText: {{text}}\n{{/text}}\n{{^text}}\nDer Text folgt im Chat.\n{{/text}}\nB';
+  assert.equal(E.render(t, { text: 'Hallo' }), 'A\nText: Hallo\nB');
+  assert.equal(E.render(t, {}), 'A\nDer Text folgt im Chat.\nB');
+  assert.deepEqual(E.extractKeys(t), ['text']);
+  assert.equal(E.checkTemplate(t).length, 0);
+  assert.equal(E.checkTemplate('{{^x}}ohne Ende').length, 1);
+  assert.equal(E.renameKey('{{^x}}a{{/x}}', 'x', 'y'), '{{^y}}a{{/y}}');
+});

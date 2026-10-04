@@ -7,12 +7,13 @@
 
   const KEY = '[\\p{L}\\p{N}_-]+';
   const KEY_ONLY_RE = new RegExp('^' + KEY + '$', 'u');
-  const ANY_TAG_RE = new RegExp('\\{\\{\\s*[#/]?\\s*(' + KEY + ')\\s*\\}\\}', 'gu');
-  const SECTION_TAG_RE = new RegExp('\\{\\{\\s*([#/])\\s*(' + KEY + ')\\s*\\}\\}', 'gu');
+  const ANY_TAG_RE = new RegExp('\\{\\{\\s*[#^/]?\\s*(' + KEY + ')\\s*\\}\\}', 'gu');
+  const SECTION_TAG_RE = new RegExp('\\{\\{\\s*([#^/])\\s*(' + KEY + ')\\s*\\}\\}', 'gu');
   const VAR_RE = new RegExp('\\{\\{\\s*(' + KEY + ')\\s*\\}\\}', 'gu');
+  // {{#x}}…{{/x}} erscheint nur mit Antwort, {{^x}}…{{/x}} nur ohne Antwort.
   // Ein Zeilenumbruch direkt nach dem Start- bzw. vor dem End-Tag gehört zum Tag,
   // damit Blöcke auf eigenen Zeilen keine Leerzeilen hinterlassen.
-  const SECTION_RE = new RegExp('\\{\\{#\\s*(' + KEY + ')\\s*\\}\\}\\n?([\\s\\S]*?)\\n?\\{\\{\\/\\s*\\1\\s*\\}\\}', 'u');
+  const SECTION_RE = new RegExp('\\{\\{([#^])\\s*(' + KEY + ')\\s*\\}\\}\\n?([\\s\\S]*?)\\n?\\{\\{\\/\\s*\\2\\s*\\}\\}', 'u');
 
   const FIELD_TYPES = ['text', 'textarea', 'select'];
   const BACKUP_VERSION = 1;
@@ -30,11 +31,11 @@
     let m;
     let guard = 0;
     while ((m = SECTION_RE.exec(out)) && guard++ < 1000) {
-      const keep = isFilled(values[m[1]]);
+      const keep = (m[1] === '#') === isFilled(values[m[2]]);
       let end = m.index + m[0].length;
       // Steht ein weggelassener Abschnitt allein auf seiner Zeile, verschwindet die ganze Zeile.
       if (!keep && (m.index === 0 || out[m.index - 1] === '\n') && out[end] === '\n') end++;
-      out = out.slice(0, m.index) + (keep ? m[2] : '') + out.slice(end);
+      out = out.slice(0, m.index) + (keep ? m[3] : '') + out.slice(end);
     }
     out = out.replace(SECTION_TAG_RE, ''); // verwaiste Abschnitts-Tags entfernen
     out = out.replace(VAR_RE, (_, k) => (isFilled(values[k]) ? String(values[k]).trim() : ''));
@@ -53,7 +54,7 @@
   /** Benennt einen Platzhalter überall im Template um (auch in Abschnitten). */
   function renameKey(template, from, to) {
     const safe = String(from).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const re = new RegExp('\\{\\{(\\s*[#/]?\\s*)' + safe + '(\\s*)\\}\\}', 'gu');
+    const re = new RegExp('\\{\\{(\\s*[#^/]?\\s*)' + safe + '(\\s*)\\}\\}', 'gu');
     return String(template || '').replace(re, (_, pre, post) => '{{' + pre + to + post + '}}');
   }
 
@@ -62,7 +63,7 @@
     const open = {};
     const close = {};
     for (const m of String(template || '').matchAll(SECTION_TAG_RE)) {
-      const bag = m[1] === '#' ? open : close;
+      const bag = m[1] === '/' ? close : open;
       bag[m[2]] = (bag[m[2]] || 0) + 1;
     }
     const msgs = [];

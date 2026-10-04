@@ -30,6 +30,7 @@
     help: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
     up: '<path d="m18 15-6-6-6 6"/>',
     down: '<path d="m6 9 6 6 6-6"/>',
+    back: '<path d="m15 18-6-6 6-6"/>',
     history: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
     share: '<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/>'
   };
@@ -303,12 +304,20 @@
     $('#resultBox').classList.remove('has-result');
     $('#copyAgain').disabled = true;
     $('#shareResult').disabled = true;
-    setHash(p.id);
     const d = $('#useDialog');
     if (!d.open) d.showModal();
+    pushDialogEntry('#p=' + encodeURIComponent(p.id));
     $('.dlg-body', d).scrollTop = 0;
+    $$('#answerForm textarea').forEach(autoGrow);
+    // Am Handy nicht sofort die Tastatur aufklappen
     const first = $('#answerForm [name]');
-    if (first) first.focus();
+    if (first && !window.matchMedia('(pointer: coarse)').matches) first.focus();
+  }
+
+  function autoGrow(ta) {
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight + 2, Math.round(window.innerHeight * 0.5)) + 'px';
+    ta.style.overflowY = ta.scrollHeight + 2 > window.innerHeight * 0.5 ? 'auto' : 'hidden';
   }
 
   async function generate() {
@@ -339,17 +348,43 @@
     }
   }
 
-  function setHash(id) {
-    const base = location.pathname + location.search;
-    try { history.replaceState(null, '', id ? '#p=' + encodeURIComponent(id) : base); } catch (e) { /* file:// in manchen Browsern */ }
-  }
-
   function openFromHash() {
     const m = location.hash.match(/^#p=(.+)$/);
     if (!m) return;
+    // Direktlink: Übersicht als Grundlage, damit «Zurück» dorthin führt statt aus der App
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* egal */ }
     const p = byId(decodeURIComponent(m[1]));
     if (p) openUse(p);
     else toast('Der verlinkte Prompt existiert nicht mehr.', 'warn');
+  }
+
+  // ---------- Zurück-Taste ----------
+  // Offene Vollbild-Ansichten (Prompt nutzen, Editor) erhalten einen eigenen Eintrag im Browser-Verlauf.
+  // So schliesst die Zurück-Taste bzw. -Geste die Ansicht, statt die App zu verlassen.
+
+  const PAGE_DIALOGS = ['#useDialog', '#editDialog'];
+  let historyEntry = false;
+
+  function pushDialogEntry(hash) {
+    const url = location.pathname + location.search + (hash || '');
+    try {
+      if (historyEntry) history.replaceState({ pb: 1 }, '', url);
+      else { history.pushState({ pb: 1 }, '', url); historyEntry = true; }
+    } catch (e) { /* file:// in manchen Browsern */ }
+  }
+
+  /** Nach dem Schliessen per Knopf oder Esc den eigenen Verlaufseintrag wieder entfernen. */
+  function releaseDialogEntry() {
+    if (!historyEntry || PAGE_DIALOGS.some(s => $(s).open)) return;
+    historyEntry = false;
+    history.back();
+  }
+
+  function onPopState() {
+    if (!historyEntry) return; // Eintrag schon entfernt, normale Navigation
+    historyEntry = false;
+    if ($('#editDialog').open) closeEditor(true);
+    else if ($('#useDialog').open) $('#useDialog').close();
   }
 
   // ---------- Editor ----------
@@ -399,12 +434,16 @@
     updateTemplateInfo();
     const d = $('#editDialog');
     d.showModal();
+    pushDialogEntry('');
     $('.dlg-body', d).scrollTop = 0;
-    $('#edTitle').focus();
+    if (!window.matchMedia('(pointer: coarse)').matches) $('#edTitle').focus();
   }
 
-  async function closeEditor() {
-    if (dirty && !(await confirmBox('Ungespeicherte Änderungen verwerfen?', 'Verwerfen', true))) return;
+  async function closeEditor(fromBack) {
+    if (dirty && !(await confirmBox('Ungespeicherte Änderungen verwerfen?', 'Verwerfen', true))) {
+      if (fromBack) pushDialogEntry(''); // Zurück abgebrochen: Eintrag wiederherstellen
+      return;
+    }
     dirty = false;
     $('#editDialog').close();
   }
@@ -826,7 +865,10 @@
     // Prompt nutzen
     const answerForm = $('#answerForm');
     answerForm.addEventListener('submit', e => { e.preventDefault(); generate(); });
-    answerForm.addEventListener('input', e => { if (e.target.setCustomValidity) e.target.setCustomValidity(''); });
+    answerForm.addEventListener('input', e => {
+      if (e.target.setCustomValidity) e.target.setCustomValidity('');
+      if (e.target.tagName === 'TEXTAREA') autoGrow(e.target); // Feld wächst beim Tippen mit
+    });
     answerForm.addEventListener('keydown', e => {
       if (e.key !== 'Enter') return;
       if (e.ctrlKey || e.metaKey) { e.preventDefault(); generate(); return; }
@@ -841,7 +883,9 @@
     $('#useDialog').addEventListener('keydown', e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !answerForm.contains(e.target)) { e.preventDefault(); generate(); }
     });
-    $('#useDialog').addEventListener('close', () => setHash(null));
+    $('#useDialog').addEventListener('close', releaseDialogEntry);
+    $('#editDialog').addEventListener('close', releaseDialogEntry);
+    window.addEventListener('popstate', onPopState);
     // Teilen (Handy): Prompt direkt an die ChatGPT-, Claude- oder Gemini-App schicken
     const share = $('#shareResult');
     share.hidden = !navigator.share;
@@ -860,9 +904,8 @@
       toast(ok ? 'Link zu diesem Prompt kopiert.' : url, ok ? 'ok' : 'warn');
     });
     $('#useEdit').addEventListener('click', () => {
-      const p = current;
+      openEditor(current, 'edit'); // zuerst öffnen, damit der Verlaufseintrag bestehen bleibt
       $('#useDialog').close();
-      openEditor(p, 'edit');
     });
 
     // Editor

@@ -18,5 +18,5 @@ window.PB_CONFIG = {
 
   // Vorschläge im Editor. Diese Kategorien erhalten feste, gut unterscheidbare Farben.
   // Weitere Kategorien kann man jederzeit frei eintippen.
-  categories: ['Didaktik', 'Administration', 'Analyse', 'Kommunikation']
+  categories: ['Prompting', 'Didaktik', 'Analyse', 'Kommunikation', 'Schreiben', 'Administration']
 };

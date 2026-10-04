@@ -1,92 +1,26 @@
 {
   "app": "Prompt-Bibliothek",
   "version": 1,
-  "exportedAt": "2026-10-04T06:16:21.536Z",
-  "count": 6,
+  "exportedAt": "2026-10-04T07:23:47.377Z",
+  "count": 7,
   "prompts": [
     {
-      "id": "beispiel-dokument-analysieren",
-      "title": "Dokument analysieren",
-      "description": "Analysiert ein eingefügtes Dokument mit klarem Fokus: Kernaussagen, Analyse, Lücken und nächste Schritte.",
-      "category": "Analyse",
+      "id": "vorlage-nachricht-formulieren",
+      "title": "E-Mail oder Nachricht formulieren",
+      "description": "Formuliert eine klare, kurze Nachricht mit Betreffzeile und eindeutigem nächsten Schritt.",
+      "category": "Kommunikation",
       "author": "Vorlage",
       "tags": [
-        "Zusammenfassung",
-        "Reglement"
-      ],
-      "fields": [
-        {
-          "key": "dokumenttyp",
-          "label": "Was für ein Dokument ist es?",
-          "type": "text",
-          "required": true,
-          "placeholder": "z. B. Reglement, Studie, Zeitungsartikel, Gesetzestext",
-          "default": ""
-        },
-        {
-          "key": "ziel",
-          "label": "Worauf soll die Analyse fokussieren?",
-          "type": "textarea",
-          "required": true,
-          "placeholder": "z. B. Was ändert sich für unsere Studierenden im Praktikum?",
-          "default": ""
-        },
-        {
-          "key": "format",
-          "label": "In welchem Format?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "Stichpunkte",
-          "options": [
-            "Stichpunkte",
-            "Tabelle",
-            "Fliesstext"
-          ]
-        },
-        {
-          "key": "laenge",
-          "label": "Wie ausführlich?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "kurz, höchstens eine halbe Seite",
-          "options": [
-            "kurz, höchstens eine halbe Seite",
-            "mittel, etwa eine Seite",
-            "ausführlich"
-          ]
-        },
-        {
-          "key": "rolle",
-          "label": "Aus welcher Perspektive soll die KI analysieren?",
-          "type": "text",
-          "required": true,
-          "placeholder": "",
-          "default": "eine sorgfältige Fachperson für Bildungsfragen"
-        }
-      ],
-      "template": "Du bist {{rolle}}.\n\nAnalysiere das unten eingefügte Dokument ({{dokumenttyp}}).\nFokus der Analyse: {{ziel}}\n\nGliedere die Antwort so:\n1. Kernaussagen in drei Sätzen\n2. Analyse zum Fokus ({{format}}, {{laenge}})\n3. Offene Fragen, Widersprüche oder Lücken im Dokument\n4. Konkrete Konsequenzen oder nächste Schritte\n\nHalte dich strikt an den Inhalt des Dokuments und kennzeichne eigene Einschätzungen als solche.\nSchreibe in Schweizer Rechtschreibung (kein ß).\n\n--- DOKUMENT ---\n[Hier den Text einfügen oder das Dokument anhängen]",
-      "createdAt": "2026-10-04T08:00:00.000Z",
-      "updatedAt": "2026-10-04T08:00:00.000Z"
-    },
-    {
-      "id": "beispiel-email",
-      "title": "E-Mail formulieren",
-      "description": "Formuliert eine klare, kurze E-Mail mit Betreffzeile, passend zu Empfänger, Anliegen und Ton.",
-      "category": "Administration",
-      "author": "Vorlage",
-      "tags": [
-        "Kommunikation",
-        "E-Mail"
+        "E-Mail",
+        "Nachricht"
       ],
       "fields": [
         {
           "key": "empfaenger",
-          "label": "An wen geht die E-Mail?",
+          "label": "An wen geht die Nachricht?",
           "type": "text",
-          "required": true,
-          "placeholder": "z. B. Klasse HF 2A, Schulleitung, Lieferant",
+          "required": false,
+          "placeholder": "",
           "default": ""
         },
         {
@@ -94,264 +28,304 @@
           "label": "Worum geht es?",
           "type": "textarea",
           "required": true,
-          "placeholder": "z. B. Die Prüfung wird vom 12. auf den 19. November verschoben",
+          "placeholder": "",
           "default": ""
         },
         {
-          "key": "punkte",
+          "key": "wichtig",
           "label": "Was muss unbedingt drinstehen?",
           "type": "textarea",
           "required": false,
-          "placeholder": "z. B. neuer Raum, mitzubringendes Material, Frist für Rückmeldungen",
+          "placeholder": "",
           "default": ""
         },
         {
           "key": "ton",
-          "label": "Welcher Ton?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "freundlich und sachlich",
-          "options": [
-            "freundlich und sachlich",
-            "formell",
-            "kurz und knapp",
-            "herzlich"
-          ]
-        },
-        {
-          "key": "anrede",
-          "label": "Du oder Sie?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "Sie",
-          "options": [
-            "Sie",
-            "Du"
-          ]
-        }
-      ],
-      "template": "Formuliere eine E-Mail an {{empfaenger}}.\n\nAnliegen: {{anliegen}}\n{{#punkte}}\nDiese Punkte müssen zwingend vorkommen:\n{{punkte}}\n{{/punkte}}\n\nTon: {{ton}}. Anrede: {{anrede}}.\nHalte die E-Mail kurz, klar gegliedert und mit einer eindeutigen Handlungsaufforderung am Schluss. Schlage zusätzlich eine prägnante Betreffzeile vor.\nSchreibe in Schweizer Rechtschreibung (kein ß, Grussformel «Freundliche Grüsse»).",
-      "createdAt": "2026-10-04T08:00:00.000Z",
-      "updatedAt": "2026-10-04T08:00:00.000Z"
-    },
-    {
-      "id": "beispiel-feedback",
-      "title": "Feedback zu einer Arbeit",
-      "description": "Formuliert ein wertschätzendes, klares schriftliches Feedback mit Stärken, Verbesserungen und Ausblick.",
-      "category": "Kommunikation",
-      "author": "Vorlage",
-      "tags": [
-        "Feedback",
-        "Bewertung"
-      ],
-      "fields": [
-        {
-          "key": "arbeit",
-          "label": "Zu welcher Arbeit?",
-          "type": "text",
-          "required": true,
-          "placeholder": "z. B. Semesterarbeit zur Menüplanung",
-          "default": ""
-        },
-        {
-          "key": "staerken",
-          "label": "Was ist gut gelungen?",
-          "type": "textarea",
-          "required": true,
-          "placeholder": "Stichworte genügen",
-          "default": ""
-        },
-        {
-          "key": "verbesserung",
-          "label": "Was muss besser werden?",
-          "type": "textarea",
-          "required": true,
-          "placeholder": "Stichworte genügen",
-          "default": ""
-        },
-        {
-          "key": "note",
-          "label": "Gibt es eine Note oder Bewertung?",
+          "label": "Welcher Ton passt?",
           "type": "text",
           "required": false,
-          "placeholder": "z. B. 4.5",
+          "placeholder": "z. B. freundlich, sachlich, formell; Du oder Sie",
           "default": ""
-        },
-        {
-          "key": "ton",
-          "label": "Welcher Ton?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "ermutigend",
-          "options": [
-            "ermutigend",
-            "sachlich",
-            "direkt und klar"
-          ]
-        },
-        {
-          "key": "anrede",
-          "label": "Du oder Sie?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "Du",
-          "options": [
-            "Du",
-            "Sie"
-          ]
         }
       ],
-      "template": "Du bist eine wertschätzende und klare Lehrperson.\n\nFormuliere ein schriftliches Feedback zu folgender Arbeit: {{arbeit}}\n\nStärken: {{staerken}}\nVerbesserungspunkte: {{verbesserung}}\n{{#note}}\nBewertung: {{note}}. Begründe sie nachvollziehbar.\n{{/note}}\n\nAufbau: zuerst konkrete Stärken, dann höchstens drei Verbesserungspunkte mit je einem umsetzbaren Tipp, am Schluss ein motivierender Ausblick.\nTon: {{ton}}. Anrede: {{anrede}}. Höchstens 200 Wörter.\nSchreibe in Schweizer Rechtschreibung (kein ß).",
-      "createdAt": "2026-10-04T08:00:00.000Z",
-      "updatedAt": "2026-10-04T08:00:00.000Z"
+      "template": "Formuliere eine E-Mail{{#empfaenger}} an {{empfaenger}}{{/empfaenger}}.\n\nAnliegen: {{anliegen}}\n{{#wichtig}}\nMuss unbedingt vorkommen: {{wichtig}}\n{{/wichtig}}\n{{#ton}}\nTon: {{ton}}\n{{/ton}}\n\nHalte die Nachricht kurz und klar gegliedert, mit einer eindeutigen Bitte oder einem nächsten Schritt am Schluss. Schlage zusätzlich eine passende Betreffzeile vor. Fehlt etwas Wichtiges, frage nach, statt etwas zu erfinden.",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "updatedAt": "2026-10-04T12:00:00.000Z"
     },
     {
-      "id": "beispiel-haccp-gefahrenanalyse",
-      "title": "HACCP-Gefahrenanalyse",
-      "description": "Erstellt eine Gefahrenanalyse mit Fliessdiagramm, CCP-Bestimmung, Grenzwerten und Korrekturmassnahmen.",
+      "id": "vorlage-entscheidungshelfer",
+      "title": "Entscheidungen und Probleme lösen",
+      "description": "Führt iterativ zu einer belastbaren Entscheidung: Lage, Optionen, Empfehlung, Umsetzung. Mit Modi wie KRITIK, MATRIX oder PLAN.",
       "category": "Analyse",
       "author": "Vorlage",
       "tags": [
-        "HACCP",
-        "Hygiene",
-        "Selbstkontrolle"
+        "Entscheidung",
+        "Problemlösung",
+        "Iterativ"
       ],
       "fields": [
         {
-          "key": "prozess",
-          "label": "Welches Produkt oder welcher Prozess?",
-          "type": "text",
-          "required": true,
-          "placeholder": "z. B. Sous-vide gegarte Schweinsschulter für ein Bankett",
+          "key": "problem",
+          "label": "Was ist das Problem oder die Entscheidung?",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "Leer lassen, wenn du es lieber im Chat beschreibst",
           "default": ""
         },
         {
-          "key": "betrieb",
-          "label": "In welchem Betrieb?",
-          "type": "select",
-          "required": true,
+          "key": "ziel",
+          "label": "Was möchtest du erreichen?",
+          "type": "text",
+          "required": false,
           "placeholder": "",
-          "default": "",
-          "options": [
-            "À-la-carte-Restaurant",
-            "Hotelküche mit Bankett",
-            "Gemeinschaftsgastronomie",
-            "Catering"
-          ]
+          "default": ""
         },
         {
-          "key": "zweck",
-          "label": "Wofür wird die Analyse gebraucht?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "als Unterrichtsbeispiel",
-          "options": [
-            "als Unterrichtsbeispiel",
-            "für das Selbstkontrollkonzept eines Betriebs",
-            "als Prüfungsaufgabe mit Lösung"
-          ]
-        },
-        {
-          "key": "schritte",
-          "label": "Welche Prozessschritte sind schon bekannt?",
+          "key": "kontext",
+          "label": "Welcher Hintergrund ist wichtig?",
           "type": "textarea",
           "required": false,
-          "placeholder": "z. B. Wareneingang, Lagerung, Vorbereitung, Garen, Abkühlen, Regenerieren, Ausgabe",
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "kriterien",
+          "label": "Woran erkennst du eine gute Lösung?",
+          "type": "text",
+          "required": false,
+          "placeholder": "z. B. Kosten, Aufwand, Wirkung, Risiko",
+          "default": ""
+        },
+        {
+          "key": "zeit",
+          "label": "Wie viel Zeit steht zur Verfügung?",
+          "type": "text",
+          "required": false,
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "budget",
+          "label": "Welches Budget gibt es?",
+          "type": "text",
+          "required": false,
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "format",
+          "label": "In welcher Form möchtest du die Antwort?",
+          "type": "text",
+          "required": false,
+          "placeholder": "",
           "default": ""
         }
       ],
-      "template": "Du bist eine erfahrene Fachperson für Lebensmittelsicherheit und HACCP in der Schweizer Gastronomie.\n\nErstelle eine HACCP-Gefahrenanalyse für: {{prozess}}\nBetrieb: {{betrieb}}\nVerwendungszweck: {{zweck}}\n{{#schritte}}\nBekannte Prozessschritte: {{schritte}}\n{{/schritte}}\n\nVorgehen:\n1. Stelle die Prozessschritte als Fliessdiagramm dar{{#schritte}} und ergänze fehlende Schritte{{/schritte}}.\n2. Analysiere pro Schritt die biologischen, chemischen und physikalischen Gefahren.\n3. Bestimme die kritischen Kontrollpunkte (CCP) mit dem Entscheidungsbaum und begründe jeden Entscheid.\n4. Lege für jeden CCP Grenzwert, Überwachung (wer, wie, wie oft), Korrekturmassnahme und Dokumentation fest.\n5. Gib das Ergebnis als Tabelle aus.\n\nStütze dich auf das Schweizer Lebensmittelrecht (insbesondere die Hygieneverordnung des EDI, HyV) und die Branchenleitlinie GVG (Gute Verfahrenspraxis im Gastgewerbe). Weise darauf hin, wo betriebsspezifische Werte geprüft werden müssen.\nSchreibe in Schweizer Rechtschreibung (kein ß).",
-      "createdAt": "2026-10-04T08:00:00.000Z",
-      "updatedAt": "2026-10-04T08:00:00.000Z"
+      "template": "Du hilfst mir bei offenen Problemen und Entscheidungen mit mehreren Lösungswegen. Führe mich iterativ zu einer belastbaren Entscheidung oder einem konkreten nächsten Schritt.\n\nFehlt entscheidender Kontext, stelle maximal 3 gezielte Rückfragen. Reichen die Angaben aus, beginne direkt. Beziehe neue Nachrichten auf den bisherigen Stand und aktualisiere Annahmen und Empfehlung sichtbar.\n\nStandardantwort\n1. Lage: Problem, Ziel und Kriterien; trenne Fakten, Annahmen und offene Punkte.\n2. Optionen: 2–3 wirklich unterschiedliche Wege mit Nutzen, Aufwand, Risiken und Bedingungen.\n3. Empfehlung: sinnvollste Option oder Testschritt, kurze Begründung, stärkster Einwand und wichtigste Unsicherheit.\n4. Umsetzung: 3–5 Schritte, beginnend mit der nächsten konkreten Handlung; dazu 2–4 beobachtbare Erfolgskriterien.\n\nSteuerung\nMODUS: STANDARD – vollständige Analyse\nMODUS: KRITIK – Empfehlung, Risiken und schwache Annahmen angreifen\nMODUS: ALTERNATIVE – deutlich anderen Lösungsweg entwickeln\nMODUS: MATRIX – Optionen nach meinen Kriterien vergleichen; fehlende Gewichtungen als Annahme markieren\nMODUS: PLAN – Empfehlung in Ablauf, Abhängigkeiten und Kontrollpunkte übersetzen\nMODUS: STATUS – Fakten, Annahmen, Empfehlung und nächsten Schritt knapp zusammenfassen\nMODUS: NEUSTART – bisherigen Problemkontext zurücksetzen\n\nEingaben und Regeln\nOptional: PROBLEM | ZIEL | KONTEXT | KRITERIEN | ZEIT | BUDGET | FORMAT\n- Begründe knapp; gib keine langen internen Gedankengänge aus.\n- Erfinde keine Fakten, Zahlen oder Quellen. Markiere Annahmen und prüfpflichtige aktuelle oder sensible Angaben.\n- Mache bei einer Matrix subjektive Kriterien und Gewichtungen sichtbar.\n- Jede vollständige Analyse endet mit einem konkreten nächsten Schritt.\n\n{{#problem}}\nPROBLEM: {{problem}}\n{{/problem}}\n{{#ziel}}\nZIEL: {{ziel}}\n{{/ziel}}\n{{#kontext}}\nKONTEXT: {{kontext}}\n{{/kontext}}\n{{#kriterien}}\nKRITERIEN: {{kriterien}}\n{{/kriterien}}\n{{#zeit}}\nZEIT: {{zeit}}\n{{/zeit}}\n{{#budget}}\nBUDGET: {{budget}}\n{{/budget}}\n{{#format}}\nFORMAT: {{format}}\n{{/format}}\n\nWenn noch kein Problem vorliegt, frage danach. Sonst beginne direkt.",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "updatedAt": "2026-10-04T12:00:00.000Z"
     },
     {
-      "id": "beispiel-lektion-planen",
-      "title": "Lektion planen",
-      "description": "Plant eine Lektion mit Lernzielen, Einstieg, Ablauf als Tabelle, Lernkontrolle und Differenzierung.",
-      "category": "Didaktik",
+      "id": "vorlage-prompt-creator",
+      "title": "Prompt Creator",
+      "description": "Erstellt mit dir zusammen den bestmöglichen Prompt: klare Struktur, Begründung, Verbesserungsvorschläge, Rückfragen und Qualitäts-Ampel.",
+      "category": "Prompting",
       "author": "Vorlage",
       "tags": [
-        "Planung",
-        "Lektion"
+        "Prompt",
+        "Iterativ"
       ],
       "fields": [
         {
-          "key": "thema",
-          "label": "Was ist das genaue Thema der Lektion?",
-          "type": "text",
+          "key": "aufgabe",
+          "label": "Worum soll es in dem Prompt gehen? Beschreibe die Aufgabe so genau wie möglich.",
+          "type": "textarea",
           "required": true,
-          "placeholder": "z. B. Kritische Kontrollpunkte beim Abkühlen von Speisen",
+          "placeholder": "",
           "default": ""
         },
         {
           "key": "zielgruppe",
-          "label": "Für welche Zielgruppe?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "Studierende HF",
-          "options": [
-            "Lernende EFZ",
-            "Studierende HF",
-            "Erwachsene in der Weiterbildung"
-          ]
-        },
-        {
-          "key": "dauer",
-          "label": "Wie lange dauert die Lektion?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "90 Minuten",
-          "options": [
-            "45 Minuten",
-            "90 Minuten",
-            "einen Halbtag (ca. 3,5 Stunden)"
-          ]
-        },
-        {
-          "key": "vorwissen",
-          "label": "Was weiss die Klasse bereits?",
-          "type": "textarea",
+          "label": "Wer ist die Zielgruppe der Ausgabe?",
+          "type": "text",
           "required": false,
-          "placeholder": "z. B. Grundlagen HACCP bekannt, noch keine Praxis im Messen",
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "format",
+          "label": "Welches Ausgabeformat wünschst du dir?",
+          "type": "text",
+          "required": false,
+          "placeholder": "z. B. Tabelle, E-Mail, Stichpunkte, Präsentation",
+          "default": ""
+        },
+        {
+          "key": "ton",
+          "label": "Welchen Ton und Stil soll die Ausgabe haben?",
+          "type": "text",
+          "required": false,
+          "placeholder": "",
           "default": ""
         },
         {
           "key": "einschraenkungen",
-          "label": "Gibt es Einschränkungen zur Umsetzung?",
+          "label": "Gibt es Einschränkungen oder Dinge, die die KI NICHT tun soll?",
           "type": "textarea",
           "required": false,
-          "placeholder": "z. B. kein Beamer, 24 Personen, Lehrküche verfügbar",
+          "placeholder": "",
           "default": ""
         },
         {
-          "key": "rolle",
-          "label": "Welche Rolle soll die KI einnehmen?",
+          "key": "modell",
+          "label": "Welches KI-Modell wirst du verwenden? Eines mit Reasoning oder ohne?",
           "type": "text",
-          "required": true,
-          "placeholder": "",
-          "default": "eine erfahrene Lehrperson an einer Höheren Fachschule für Hotellerie und Gastronomie"
+          "required": false,
+          "placeholder": "z. B. ChatGPT, Claude, Gemini; mit oder ohne Reasoning",
+          "default": ""
         }
       ],
-      "template": "Du bist {{rolle}}.\n\nPlane eine Lektion von {{dauer}} zum Thema «{{thema}}» für {{zielgruppe}}.\n{{#vorwissen}}\nVorwissen der Klasse: {{vorwissen}}\n{{/vorwissen}}\n{{#einschraenkungen}}\nRahmenbedingungen, die zwingend einzuhalten sind: {{einschraenkungen}}\n{{/einschraenkungen}}\n\nLiefere:\n1. Zwei bis drei überprüfbare Lernziele mit Angabe der Taxonomiestufe (K1 bis K6).\n2. Einen aktivierenden Einstieg mit konkretem Bezug zum Berufsalltag.\n3. Den Ablauf als Tabelle mit den Spalten Zeit, Phase, Inhalt, Methode, Sozialform und Material.\n4. Eine kurze Lernkontrolle für den Schluss der Lektion.\n5. Je eine Variante für schnellere und für langsamere Lernende.\n\nSchreibe in Schweizer Rechtschreibung (kein ß) und so konkret, dass ich die Lektion direkt umsetzen kann.",
-      "createdAt": "2026-10-04T08:00:00.000Z",
-      "updatedAt": "2026-10-04T08:00:00.000Z"
+      "template": "Ich möchte, dass Du mein Prompt Creator wirst. Dein Ziel ist es, mir zu helfen, den bestmöglichen Prompt für meine Bedürfnisse zu erstellen. Der Prompt wird von einer KI (z. B. ChatGPT, Claude, Gemini oder einem anderen Sprachmodell) verwendet.\n\nMeine Angaben:\nAufgabe: {{aufgabe}}\n{{#zielgruppe}}\nZielgruppe der Ausgabe: {{zielgruppe}}\n{{/zielgruppe}}\n{{#format}}\nGewünschtes Ausgabeformat: {{format}}\n{{/format}}\n{{#ton}}\nTon und Stil: {{ton}}\n{{/ton}}\n{{#einschraenkungen}}\nEinschränkungen, Dinge, die die KI NICHT tun soll: {{einschraenkungen}}\n{{/einschraenkungen}}\n{{#modell}}\nVerwendetes KI-Modell: {{modell}}\n{{/modell}}\n\nFehlen Angaben zu Zielgruppe, Ausgabeformat, Ton und Stil, Einschränkungen oder KI-Modell (mit oder ohne Reasoning), frage zuerst gezielt danach.\n\nVerwende dabei folgende Struktur:\n\n<role> – Wer die KI sein soll, mit konkreter Expertise\n<context> – Hintergrundinformationen zur Aufgabe\n<task> – Die eigentliche Aufgabe, in logische Schritte unterteilt\n<constraints> – Einschränkungen und Grenzen\n<output_format> – Genaue Beschreibung des gewünschten Formats\n<edge_cases> – Umgang mit Sonderfällen\n\nFalls der Nutzer ein Reasoning-Modell verwendet, halte den Prompt kürzer und zielorientierter – ohne explizite Schritt-für-Schritt-Anweisungen, da diese Modelle intern bereits schrittweise denken.\n\nErkläre kurz, warum Du den Prompt so aufgebaut hast und welche Entscheidungen Du getroffen hast.\n\nDu machst 2–4 konkrete Vorschläge, welche Details noch hinzugefügt werden könnten, um den Prompt weiter zu verbessern. Dazu gehören z. B.:\n- Beispiele (Few-Shot), die das gewünschte Ergebnis zeigen\n- Zusätzlicher Kontext oder Hintergrundinformationen\n- Bewertungskriterien, mit denen die KI ihre eigene Antwort prüfen kann\n- Platzhalter/Variablen für wiederkehrende Nutzung\n\nDu stellst 2–4 gezielte Rückfragen, die mir helfen, weitere Informationen zu liefern.\n\nBewerte den Prompt jeweils mit einer Qualitäts-Ampel:\nRot = Noch nicht einsetzbar – wichtige Informationen fehlen.\nGelb = Funktioniert, kann aber noch deutlich verbessert werden.\nGrün = Einsatzbereit – der Prompt ist klar, vollständig und gut strukturiert.\n\nBei jeder Iteration nimmst Du gezielte Änderungen vor, statt den gesamten Prompt neu zu schreiben, und erklärst kurz, was Du geändert hast und warum.\n\nSobald die Qualitäts-Ampel auf Grün steht, frage mich: «Soll ich den Prompt einmal für Dich testen, damit Du siehst, wie das Ergebnis aussieht?»\n\nZum Abschluss lieferst Du den finalen Prompt in einer sauberen, kopierbaren Version – ohne die Abschnitte Begründung, Vorschläge, Fragen und Qualitäts-Ampel.",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "updatedAt": "2026-10-04T12:00:00.000Z"
     },
     {
-      "id": "beispiel-pruefungsfragen",
-      "title": "Prüfungsfragen mit Musterlösung",
-      "description": "Erstellt Prüfungsfragen in wählbarem Typ und Niveau, inklusive Musterlösung, Punkten und Übersichtstabelle.",
+      "id": "vorlage-zusammenfassen",
+      "title": "Text oder Dokument zusammenfassen",
+      "description": "Fasst einen Text mit klarem Fokus zusammen: Kernaussage, wichtigste Punkte, Lücken und Konsequenzen.",
+      "category": "Analyse",
+      "author": "Vorlage",
+      "tags": [
+        "Zusammenfassung",
+        "Dokument"
+      ],
+      "fields": [
+        {
+          "key": "text",
+          "label": "Welcher Text?",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "Text einfügen oder leer lassen und das Dokument im Chat anhängen",
+          "default": ""
+        },
+        {
+          "key": "fokus",
+          "label": "Worauf soll die Zusammenfassung achten?",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "leser",
+          "label": "Für wen ist die Zusammenfassung?",
+          "type": "text",
+          "required": false,
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "umfang",
+          "label": "Wie lang darf sie sein?",
+          "type": "text",
+          "required": false,
+          "placeholder": "",
+          "default": ""
+        }
+      ],
+      "template": "Fasse den folgenden Text zusammen{{#leser}} für {{leser}}{{/leser}}.\n{{#fokus}}\nFokus: {{fokus}}\n{{/fokus}}\n{{#umfang}}\nUmfang: {{umfang}}\n{{/umfang}}\n\nGliederung:\n1. Kernaussage in einem Satz.\n2. Die wichtigsten Punkte als kurze Liste.\n3. Offene Fragen, Widersprüche oder Lücken.\n4. Was daraus konkret folgt.\n\nHalte dich strikt an den Inhalt und kennzeichne eigene Einschätzungen als solche.\n\n{{#text}}\nText:\n\"\"\"\n{{text}}\n\"\"\"\n{{/text}}\n{{^text}}\nDer Text ist angehängt oder folgt in meiner nächsten Nachricht.\n{{/text}}",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "updatedAt": "2026-10-04T12:00:00.000Z"
+    },
+    {
+      "id": "vorlage-text-ueberarbeiten",
+      "title": "Text überarbeiten",
+      "description": "Macht einen Text klarer, kürzer oder passender für die Zielgruppe und erklärt die wichtigsten Änderungen.",
+      "category": "Schreiben",
+      "author": "Vorlage",
+      "tags": [
+        "Text",
+        "Korrektur"
+      ],
+      "fields": [
+        {
+          "key": "text",
+          "label": "Welchen Text soll die KI überarbeiten?",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "Text hier einfügen",
+          "default": ""
+        },
+        {
+          "key": "ziel",
+          "label": "Was soll besser werden?",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "z. B. kürzer, verständlicher, freundlicher, fehlerfrei",
+          "default": ""
+        },
+        {
+          "key": "zielgruppe",
+          "label": "Wer liest den Text?",
+          "type": "text",
+          "required": false,
+          "placeholder": "",
+          "default": ""
+        }
+      ],
+      "template": "Du bist eine erfahrene Fachperson für Lektorat und verständliches Schreiben.\n\nÜberarbeite den folgenden Text.\n{{#ziel}}\nWas besser werden soll: {{ziel}}\n{{/ziel}}\n{{#zielgruppe}}\nZielgruppe: {{zielgruppe}}\n{{/zielgruppe}}\n\nVorgehen:\n1. Behalte Inhalt und Aussage bei und erfinde nichts dazu.\n2. Liefere zuerst die überarbeitete Fassung.\n3. Nenne danach die wichtigsten Änderungen in höchstens fünf Punkten mit kurzer Begründung.\n4. Ist etwas unklar oder mehrdeutig, frage nach.\n\nText:\n\"\"\"\n{{text}}\n\"\"\"",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "updatedAt": "2026-10-04T12:00:00.000Z"
+    },
+    {
+      "id": "vorlage-thema-erklaeren",
+      "title": "Thema verständlich erklären",
+      "description": "Erklärt ein Thema Schritt für Schritt, mit Beispiel, Vergleich, typischen Missverständnissen und Kontrollfragen.",
       "category": "Didaktik",
       "author": "Vorlage",
       "tags": [
-        "Prüfung",
-        "Bewertung"
+        "Erklären",
+        "Lernen"
+      ],
+      "fields": [
+        {
+          "key": "thema",
+          "label": "Was soll erklärt werden?",
+          "type": "text",
+          "required": true,
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "fuerwen",
+          "label": "Für wen ist die Erklärung, und was weiss diese Person schon?",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "zweck",
+          "label": "Wofür wird die Erklärung gebraucht?",
+          "type": "text",
+          "required": false,
+          "placeholder": "z. B. Einstieg in den Unterricht, Prüfungsvorbereitung",
+          "default": ""
+        }
+      ],
+      "template": "Erkläre mir folgendes Thema so, dass es wirklich verständlich wird: {{thema}}\n{{#fuerwen}}\nFür wen: {{fuerwen}}\n{{/fuerwen}}\n{{#zweck}}\nWofür: {{zweck}}\n{{/zweck}}\n\nAufbau:\n1. Kernaussage in zwei bis drei Sätzen.\n2. Erklärung Schritt für Schritt; Fachbegriffe beim ersten Auftreten kurz erklären.\n3. Ein konkretes Beispiel und ein passender Vergleich aus dem Alltag.\n4. Häufige Missverständnisse.\n5. Drei Kontrollfragen mit Lösungen.\n\nPasse Tiefe und Sprache an die Zielperson an. Fehlen dafür wichtige Angaben, frage zuerst nach.",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "updatedAt": "2026-10-04T12:00:00.000Z"
+    },
+    {
+      "id": "vorlage-unterricht-planen",
+      "title": "Unterricht oder Workshop planen",
+      "description": "Plant eine Unterrichtssequenz oder einen Workshop mit Lernzielen, Einstieg, Ablauf als Tabelle und Lernkontrolle.",
+      "category": "Didaktik",
+      "author": "Vorlage",
+      "tags": [
+        "Planung",
+        "Unterricht"
       ],
       "fields": [
         {
@@ -359,75 +333,45 @@
           "label": "Zu welchem Thema?",
           "type": "text",
           "required": true,
-          "placeholder": "z. B. Lagerung von Lebensmitteln",
+          "placeholder": "",
           "default": ""
         },
         {
           "key": "zielgruppe",
-          "label": "Für welche Zielgruppe?",
-          "type": "select",
-          "required": true,
+          "label": "Für wen?",
+          "type": "text",
+          "required": false,
           "placeholder": "",
-          "default": "Studierende HF",
-          "options": [
-            "Lernende EFZ",
-            "Studierende HF",
-            "Erwachsene in der Weiterbildung"
-          ]
+          "default": ""
         },
         {
-          "key": "anzahl",
-          "label": "Wie viele Fragen?",
-          "type": "select",
-          "required": true,
+          "key": "dauer",
+          "label": "Wie viel Zeit steht zur Verfügung?",
+          "type": "text",
+          "required": false,
           "placeholder": "",
-          "default": "10",
-          "options": [
-            "5",
-            "10",
-            "15",
-            "20"
-          ]
+          "default": ""
         },
         {
-          "key": "fragetyp",
-          "label": "Welcher Fragetyp?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "Gemischt",
-          "options": [
-            "Multiple Choice (4 Antworten, 1 richtig)",
-            "Offene Fragen",
-            "Fallbeispiele aus der Praxis",
-            "Gemischt"
-          ]
-        },
-        {
-          "key": "niveau",
-          "label": "Auf welchem Niveau?",
-          "type": "select",
-          "required": true,
-          "placeholder": "",
-          "default": "Anwendung (K3)",
-          "options": [
-            "Wissen und Verstehen (K1, K2)",
-            "Anwendung (K3)",
-            "Analyse und Beurteilung (K4 bis K6)"
-          ]
-        },
-        {
-          "key": "grundlage",
-          "label": "Auf welchen Lernzielen oder Unterlagen sollen die Fragen beruhen?",
+          "key": "ziele",
+          "label": "Was sollen die Teilnehmenden danach können?",
           "type": "textarea",
           "required": false,
-          "placeholder": "Lernziele oder Stichworte aus dem Unterricht einfügen",
+          "placeholder": "",
+          "default": ""
+        },
+        {
+          "key": "rahmen",
+          "label": "Gibt es Rahmenbedingungen?",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "z. B. Raum, Gruppengrösse, Material, Vorwissen",
           "default": ""
         }
       ],
-      "template": "Du bist eine erfahrene Fachperson für Prüfungen in der Berufsbildung.\n\nErstelle {{anzahl}} Prüfungsfragen zum Thema «{{thema}}» für {{zielgruppe}}.\nFragetyp: {{fragetyp}}\nNiveau: {{niveau}}\n{{#grundlage}}\nStütze dich ausschliesslich auf folgende Grundlage:\n{{grundlage}}\n{{/grundlage}}\n\nAnforderungen:\n- Jede Frage ist eindeutig formuliert und prüft genau ein Lernziel.\n- Gib zu jeder Frage die Musterlösung und die Punktzahl an.\n- Bei Multiple Choice: plausible Falschantworten, keine Antworten wie «alle oben genannten».\n- Gib am Schluss eine Tabelle mit Frage, Lernziel, Niveau und Punkten aus.\n\nSchreibe in Schweizer Rechtschreibung (kein ß).",
-      "createdAt": "2026-10-04T08:00:00.000Z",
-      "updatedAt": "2026-10-04T08:00:00.000Z"
+      "template": "Du bist eine erfahrene Fachperson für Didaktik und Erwachsenenbildung.\n\nPlane eine Unterrichtssequenz oder einen Workshop zum Thema «{{thema}}».\n{{#zielgruppe}}\nZielgruppe: {{zielgruppe}}\n{{/zielgruppe}}\n{{#dauer}}\nZeit: {{dauer}}\n{{/dauer}}\n{{#ziele}}\nZiele: {{ziele}}\n{{/ziele}}\n{{#rahmen}}\nRahmenbedingungen: {{rahmen}}\n{{/rahmen}}\n\nLiefere:\n1. Zwei bis vier überprüfbare Lernziele.\n2. Einen aktivierenden Einstieg.\n3. Den Ablauf als Tabelle mit Zeit, Phase, Inhalt, Methode, Sozialform und Material.\n4. Eine kurze Lernkontrolle zum Schluss.\n5. Je eine Idee für schnellere und für langsamere Teilnehmende.\n\nFehlen wichtige Angaben wie Zielgruppe, Zeit oder Ziele, frage zuerst nach.",
+      "createdAt": "2026-10-04T12:00:00.000Z",
+      "updatedAt": "2026-10-04T12:00:00.000Z"
     }
   ]
 }

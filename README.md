@@ -10,7 +10,7 @@ Gemeinsame Bibliothek für interaktive KI-Prompts: Prompt wählen, Fragen beantw
 - **Als Handy-App:**
   - iPhone: Link in Safari öffnen → Teilen-Symbol → «Zum Home-Bildschirm».
   - Android: Link in Chrome öffnen → Menü ⋮ → «App installieren» bzw. «Zum Startbildschirm hinzufügen».
-- **Prompt nutzen:** Karte antippen, Fragen beantworten, «Mega-Prompt erstellen & kopieren». Der Prompt liegt danach in der Zwischenablage. Auf dem Handy schickt «Teilen» ihn direkt an die ChatGPT-, Claude- oder Gemini-App.
+- **Prompt nutzen:** Karte antippen, Fragen beantworten (alles frei eintippen, leere Felder sind erlaubt), «Mega-Prompt erstellen & kopieren». Zurück zur Übersicht mit «‹ Zurück» oben links oder der Zurück-Geste. Der Prompt liegt danach in der Zwischenablage. Auf dem Handy schickt «Teilen» ihn direkt an die ChatGPT-, Claude- oder Gemini-App.
 - **Suche:** durchsucht Titel, Beschreibung, Template, Fragen, Autor und Tags. Gross/klein und Umlaute spielen keine Rolle.
 - Die Prompts werden bei jedem Öffnen frisch von GitHub geladen. Es wird nichts zwischengespeichert.
 
@@ -27,6 +27,9 @@ Schloss oben rechts → Master-Passwort → «Entsperren». Danach: «Neuer Prom
 |---|---|
 | `{{thema}}` | wird durch die Antwort auf die Frage «thema» ersetzt |
 | `{{#thema}} … {{/thema}}` | erscheint nur, wenn die Frage beantwortet wurde; steht der Abschnitt allein auf einer Zeile, verschwindet sonst die ganze Zeile |
+| `{{^thema}} … {{/thema}}` | erscheint nur, wenn die Frage leer blieb, z. B. «Der Text folgt in meiner nächsten Nachricht.» |
+
+**Tipp für eigene Prompts:** Fragen möglichst offen formulieren und nichts vorausfüllen. Optionale Angaben in `{{#…}}` setzen und am Schluss einen Satz wie «Fehlen wichtige Angaben, frage zuerst nach.» anfügen. So funktioniert der Prompt auch, wenn nicht alles ausgefüllt ist.
 
 Neue Platzhalter im Template werden automatisch als Frage angelegt. Benennt man eine Frage um, passt sich das Template mit an. Feldtypen: Kurztext, Langtext, Auswahl.
 

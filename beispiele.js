@@ -1,204 +1,328 @@
 /*
- * Beispiel-Prompts. Werden im Demo-Modus automatisch geladen und lassen sich
+ * Vorlagen. Werden im Demo-Modus automatisch geladen und lassen sich
  * im Edit-Modus über «Verwaltung → Beispiel-Prompts hinzufügen» in die Datenbank übernehmen.
- * Feste IDs: Mehrfaches Hinzufügen überschreibt die Beispiele, statt sie zu verdoppeln.
+ * Feste IDs: Mehrfaches Hinzufügen überschreibt die Vorlagen, statt sie zu verdoppeln.
+ * Stil: alles frei eintippen, nichts vorausgefüllt; leere Angaben fallen weg oder die KI fragt nach.
  */
-window.PB_SAMPLES = [
-  {
-    id: 'beispiel-lektion-planen',
-    title: 'Lektion planen',
-    description: 'Plant eine Lektion mit Lernzielen, Einstieg, Ablauf als Tabelle, Lernkontrolle und Differenzierung.',
-    category: 'Didaktik',
-    author: 'Vorlage',
-    tags: ['Planung', 'Lektion'],
-    fields: [
-      { key: 'thema', label: 'Was ist das genaue Thema der Lektion?', type: 'text', required: true, placeholder: 'z. B. Kritische Kontrollpunkte beim Abkühlen von Speisen', default: '' },
-      { key: 'zielgruppe', label: 'Für welche Zielgruppe?', type: 'select', required: true, placeholder: '', default: 'Studierende HF', options: ['Lernende EFZ', 'Studierende HF', 'Erwachsene in der Weiterbildung'] },
-      { key: 'dauer', label: 'Wie lange dauert die Lektion?', type: 'select', required: true, placeholder: '', default: '90 Minuten', options: ['45 Minuten', '90 Minuten', 'einen Halbtag (ca. 3,5 Stunden)'] },
-      { key: 'vorwissen', label: 'Was weiss die Klasse bereits?', type: 'textarea', required: false, placeholder: 'z. B. Grundlagen HACCP bekannt, noch keine Praxis im Messen', default: '' },
-      { key: 'einschraenkungen', label: 'Gibt es Einschränkungen zur Umsetzung?', type: 'textarea', required: false, placeholder: 'z. B. kein Beamer, 24 Personen, Lehrküche verfügbar', default: '' },
-      { key: 'rolle', label: 'Welche Rolle soll die KI einnehmen?', type: 'text', required: true, placeholder: '', default: 'eine erfahrene Lehrperson an einer Höheren Fachschule für Hotellerie und Gastronomie' }
-    ],
-    template: `Du bist {{rolle}}.
+(function () {
+  const STAND = '2026-10-04T12:00:00.000Z';
+  const frage = (key, label, type, placeholder, required) =>
+    ({ key, label, type: type || 'text', required: !!required, placeholder: placeholder || '', default: '' });
 
-Plane eine Lektion von {{dauer}} zum Thema «{{thema}}» für {{zielgruppe}}.
-{{#vorwissen}}
-Vorwissen der Klasse: {{vorwissen}}
-{{/vorwissen}}
+  window.PB_SAMPLES = [
+    {
+      id: 'vorlage-prompt-creator',
+      title: 'Prompt Creator',
+      description: 'Erstellt mit dir zusammen den bestmöglichen Prompt: klare Struktur, Begründung, Verbesserungsvorschläge, Rückfragen und Qualitäts-Ampel.',
+      category: 'Prompting',
+      author: 'Vorlage',
+      tags: ['Prompt', 'Iterativ'],
+      fields: [
+        frage('aufgabe', 'Worum soll es in dem Prompt gehen? Beschreibe die Aufgabe so genau wie möglich.', 'textarea', '', true),
+        frage('zielgruppe', 'Wer ist die Zielgruppe der Ausgabe?'),
+        frage('format', 'Welches Ausgabeformat wünschst du dir?', 'text', 'z. B. Tabelle, E-Mail, Stichpunkte, Präsentation'),
+        frage('ton', 'Welchen Ton und Stil soll die Ausgabe haben?'),
+        frage('einschraenkungen', 'Gibt es Einschränkungen oder Dinge, die die KI NICHT tun soll?', 'textarea'),
+        frage('modell', 'Welches KI-Modell wirst du verwenden? Eines mit Reasoning oder ohne?', 'text', 'z. B. ChatGPT, Claude, Gemini; mit oder ohne Reasoning')
+      ],
+      template: `Ich möchte, dass Du mein Prompt Creator wirst. Dein Ziel ist es, mir zu helfen, den bestmöglichen Prompt für meine Bedürfnisse zu erstellen. Der Prompt wird von einer KI (z. B. ChatGPT, Claude, Gemini oder einem anderen Sprachmodell) verwendet.
+
+Meine Angaben:
+Aufgabe: {{aufgabe}}
+{{#zielgruppe}}
+Zielgruppe der Ausgabe: {{zielgruppe}}
+{{/zielgruppe}}
+{{#format}}
+Gewünschtes Ausgabeformat: {{format}}
+{{/format}}
+{{#ton}}
+Ton und Stil: {{ton}}
+{{/ton}}
 {{#einschraenkungen}}
-Rahmenbedingungen, die zwingend einzuhalten sind: {{einschraenkungen}}
+Einschränkungen, Dinge, die die KI NICHT tun soll: {{einschraenkungen}}
 {{/einschraenkungen}}
+{{#modell}}
+Verwendetes KI-Modell: {{modell}}
+{{/modell}}
 
-Liefere:
-1. Zwei bis drei überprüfbare Lernziele mit Angabe der Taxonomiestufe (K1 bis K6).
-2. Einen aktivierenden Einstieg mit konkretem Bezug zum Berufsalltag.
-3. Den Ablauf als Tabelle mit den Spalten Zeit, Phase, Inhalt, Methode, Sozialform und Material.
-4. Eine kurze Lernkontrolle für den Schluss der Lektion.
-5. Je eine Variante für schnellere und für langsamere Lernende.
+Fehlen Angaben zu Zielgruppe, Ausgabeformat, Ton und Stil, Einschränkungen oder KI-Modell (mit oder ohne Reasoning), frage zuerst gezielt danach.
 
-Schreibe in Schweizer Rechtschreibung (kein ß) und so konkret, dass ich die Lektion direkt umsetzen kann.`,
-    createdAt: '2026-10-04T08:00:00.000Z',
-    updatedAt: '2026-10-04T08:00:00.000Z'
-  },
-  {
-    id: 'beispiel-pruefungsfragen',
-    title: 'Prüfungsfragen mit Musterlösung',
-    description: 'Erstellt Prüfungsfragen in wählbarem Typ und Niveau, inklusive Musterlösung, Punkten und Übersichtstabelle.',
-    category: 'Didaktik',
-    author: 'Vorlage',
-    tags: ['Prüfung', 'Bewertung'],
-    fields: [
-      { key: 'thema', label: 'Zu welchem Thema?', type: 'text', required: true, placeholder: 'z. B. Lagerung von Lebensmitteln', default: '' },
-      { key: 'zielgruppe', label: 'Für welche Zielgruppe?', type: 'select', required: true, placeholder: '', default: 'Studierende HF', options: ['Lernende EFZ', 'Studierende HF', 'Erwachsene in der Weiterbildung'] },
-      { key: 'anzahl', label: 'Wie viele Fragen?', type: 'select', required: true, placeholder: '', default: '10', options: ['5', '10', '15', '20'] },
-      { key: 'fragetyp', label: 'Welcher Fragetyp?', type: 'select', required: true, placeholder: '', default: 'Gemischt', options: ['Multiple Choice (4 Antworten, 1 richtig)', 'Offene Fragen', 'Fallbeispiele aus der Praxis', 'Gemischt'] },
-      { key: 'niveau', label: 'Auf welchem Niveau?', type: 'select', required: true, placeholder: '', default: 'Anwendung (K3)', options: ['Wissen und Verstehen (K1, K2)', 'Anwendung (K3)', 'Analyse und Beurteilung (K4 bis K6)'] },
-      { key: 'grundlage', label: 'Auf welchen Lernzielen oder Unterlagen sollen die Fragen beruhen?', type: 'textarea', required: false, placeholder: 'Lernziele oder Stichworte aus dem Unterricht einfügen', default: '' }
-    ],
-    template: `Du bist eine erfahrene Fachperson für Prüfungen in der Berufsbildung.
+Verwende dabei folgende Struktur:
 
-Erstelle {{anzahl}} Prüfungsfragen zum Thema «{{thema}}» für {{zielgruppe}}.
-Fragetyp: {{fragetyp}}
-Niveau: {{niveau}}
-{{#grundlage}}
-Stütze dich ausschliesslich auf folgende Grundlage:
-{{grundlage}}
-{{/grundlage}}
+<role> – Wer die KI sein soll, mit konkreter Expertise
+<context> – Hintergrundinformationen zur Aufgabe
+<task> – Die eigentliche Aufgabe, in logische Schritte unterteilt
+<constraints> – Einschränkungen und Grenzen
+<output_format> – Genaue Beschreibung des gewünschten Formats
+<edge_cases> – Umgang mit Sonderfällen
 
-Anforderungen:
-- Jede Frage ist eindeutig formuliert und prüft genau ein Lernziel.
-- Gib zu jeder Frage die Musterlösung und die Punktzahl an.
-- Bei Multiple Choice: plausible Falschantworten, keine Antworten wie «alle oben genannten».
-- Gib am Schluss eine Tabelle mit Frage, Lernziel, Niveau und Punkten aus.
+Falls der Nutzer ein Reasoning-Modell verwendet, halte den Prompt kürzer und zielorientierter – ohne explizite Schritt-für-Schritt-Anweisungen, da diese Modelle intern bereits schrittweise denken.
 
-Schreibe in Schweizer Rechtschreibung (kein ß).`,
-    createdAt: '2026-10-04T08:00:00.000Z',
-    updatedAt: '2026-10-04T08:00:00.000Z'
-  },
-  {
-    id: 'beispiel-email',
-    title: 'E-Mail formulieren',
-    description: 'Formuliert eine klare, kurze E-Mail mit Betreffzeile, passend zu Empfänger, Anliegen und Ton.',
-    category: 'Administration',
-    author: 'Vorlage',
-    tags: ['Kommunikation', 'E-Mail'],
-    fields: [
-      { key: 'empfaenger', label: 'An wen geht die E-Mail?', type: 'text', required: true, placeholder: 'z. B. Klasse HF 2A, Schulleitung, Lieferant', default: '' },
-      { key: 'anliegen', label: 'Worum geht es?', type: 'textarea', required: true, placeholder: 'z. B. Die Prüfung wird vom 12. auf den 19. November verschoben', default: '' },
-      { key: 'punkte', label: 'Was muss unbedingt drinstehen?', type: 'textarea', required: false, placeholder: 'z. B. neuer Raum, mitzubringendes Material, Frist für Rückmeldungen', default: '' },
-      { key: 'ton', label: 'Welcher Ton?', type: 'select', required: true, placeholder: '', default: 'freundlich und sachlich', options: ['freundlich und sachlich', 'formell', 'kurz und knapp', 'herzlich'] },
-      { key: 'anrede', label: 'Du oder Sie?', type: 'select', required: true, placeholder: '', default: 'Sie', options: ['Sie', 'Du'] }
-    ],
-    template: `Formuliere eine E-Mail an {{empfaenger}}.
+Erkläre kurz, warum Du den Prompt so aufgebaut hast und welche Entscheidungen Du getroffen hast.
 
-Anliegen: {{anliegen}}
-{{#punkte}}
-Diese Punkte müssen zwingend vorkommen:
-{{punkte}}
-{{/punkte}}
+Du machst 2–4 konkrete Vorschläge, welche Details noch hinzugefügt werden könnten, um den Prompt weiter zu verbessern. Dazu gehören z. B.:
+- Beispiele (Few-Shot), die das gewünschte Ergebnis zeigen
+- Zusätzlicher Kontext oder Hintergrundinformationen
+- Bewertungskriterien, mit denen die KI ihre eigene Antwort prüfen kann
+- Platzhalter/Variablen für wiederkehrende Nutzung
 
-Ton: {{ton}}. Anrede: {{anrede}}.
-Halte die E-Mail kurz, klar gegliedert und mit einer eindeutigen Handlungsaufforderung am Schluss. Schlage zusätzlich eine prägnante Betreffzeile vor.
-Schreibe in Schweizer Rechtschreibung (kein ß, Grussformel «Freundliche Grüsse»).`,
-    createdAt: '2026-10-04T08:00:00.000Z',
-    updatedAt: '2026-10-04T08:00:00.000Z'
-  },
-  {
-    id: 'beispiel-dokument-analysieren',
-    title: 'Dokument analysieren',
-    description: 'Analysiert ein eingefügtes Dokument mit klarem Fokus: Kernaussagen, Analyse, Lücken und nächste Schritte.',
-    category: 'Analyse',
-    author: 'Vorlage',
-    tags: ['Zusammenfassung', 'Reglement'],
-    fields: [
-      { key: 'dokumenttyp', label: 'Was für ein Dokument ist es?', type: 'text', required: true, placeholder: 'z. B. Reglement, Studie, Zeitungsartikel, Gesetzestext', default: '' },
-      { key: 'ziel', label: 'Worauf soll die Analyse fokussieren?', type: 'textarea', required: true, placeholder: 'z. B. Was ändert sich für unsere Studierenden im Praktikum?', default: '' },
-      { key: 'format', label: 'In welchem Format?', type: 'select', required: true, placeholder: '', default: 'Stichpunkte', options: ['Stichpunkte', 'Tabelle', 'Fliesstext'] },
-      { key: 'laenge', label: 'Wie ausführlich?', type: 'select', required: true, placeholder: '', default: 'kurz, höchstens eine halbe Seite', options: ['kurz, höchstens eine halbe Seite', 'mittel, etwa eine Seite', 'ausführlich'] },
-      { key: 'rolle', label: 'Aus welcher Perspektive soll die KI analysieren?', type: 'text', required: true, placeholder: '', default: 'eine sorgfältige Fachperson für Bildungsfragen' }
-    ],
-    template: `Du bist {{rolle}}.
+Du stellst 2–4 gezielte Rückfragen, die mir helfen, weitere Informationen zu liefern.
 
-Analysiere das unten eingefügte Dokument ({{dokumenttyp}}).
-Fokus der Analyse: {{ziel}}
+Bewerte den Prompt jeweils mit einer Qualitäts-Ampel:
+Rot = Noch nicht einsetzbar – wichtige Informationen fehlen.
+Gelb = Funktioniert, kann aber noch deutlich verbessert werden.
+Grün = Einsatzbereit – der Prompt ist klar, vollständig und gut strukturiert.
 
-Gliedere die Antwort so:
-1. Kernaussagen in drei Sätzen
-2. Analyse zum Fokus ({{format}}, {{laenge}})
-3. Offene Fragen, Widersprüche oder Lücken im Dokument
-4. Konkrete Konsequenzen oder nächste Schritte
+Bei jeder Iteration nimmst Du gezielte Änderungen vor, statt den gesamten Prompt neu zu schreiben, und erklärst kurz, was Du geändert hast und warum.
 
-Halte dich strikt an den Inhalt des Dokuments und kennzeichne eigene Einschätzungen als solche.
-Schreibe in Schweizer Rechtschreibung (kein ß).
+Sobald die Qualitäts-Ampel auf Grün steht, frage mich: «Soll ich den Prompt einmal für Dich testen, damit Du siehst, wie das Ergebnis aussieht?»
 
---- DOKUMENT ---
-[Hier den Text einfügen oder das Dokument anhängen]`,
-    createdAt: '2026-10-04T08:00:00.000Z',
-    updatedAt: '2026-10-04T08:00:00.000Z'
-  },
-  {
-    id: 'beispiel-haccp-gefahrenanalyse',
-    title: 'HACCP-Gefahrenanalyse',
-    description: 'Erstellt eine Gefahrenanalyse mit Fliessdiagramm, CCP-Bestimmung, Grenzwerten und Korrekturmassnahmen.',
-    category: 'Analyse',
-    author: 'Vorlage',
-    tags: ['HACCP', 'Hygiene', 'Selbstkontrolle'],
-    fields: [
-      { key: 'prozess', label: 'Welches Produkt oder welcher Prozess?', type: 'text', required: true, placeholder: 'z. B. Sous-vide gegarte Schweinsschulter für ein Bankett', default: '' },
-      { key: 'betrieb', label: 'In welchem Betrieb?', type: 'select', required: true, placeholder: '', default: '', options: ['À-la-carte-Restaurant', 'Hotelküche mit Bankett', 'Gemeinschaftsgastronomie', 'Catering'] },
-      { key: 'zweck', label: 'Wofür wird die Analyse gebraucht?', type: 'select', required: true, placeholder: '', default: 'als Unterrichtsbeispiel', options: ['als Unterrichtsbeispiel', 'für das Selbstkontrollkonzept eines Betriebs', 'als Prüfungsaufgabe mit Lösung'] },
-      { key: 'schritte', label: 'Welche Prozessschritte sind schon bekannt?', type: 'textarea', required: false, placeholder: 'z. B. Wareneingang, Lagerung, Vorbereitung, Garen, Abkühlen, Regenerieren, Ausgabe', default: '' }
-    ],
-    template: `Du bist eine erfahrene Fachperson für Lebensmittelsicherheit und HACCP in der Schweizer Gastronomie.
+Zum Abschluss lieferst Du den finalen Prompt in einer sauberen, kopierbaren Version – ohne die Abschnitte Begründung, Vorschläge, Fragen und Qualitäts-Ampel.`,
+      createdAt: STAND,
+      updatedAt: STAND
+    },
+    {
+      id: 'vorlage-entscheidungshelfer',
+      title: 'Entscheidungen und Probleme lösen',
+      description: 'Führt iterativ zu einer belastbaren Entscheidung: Lage, Optionen, Empfehlung, Umsetzung. Mit Modi wie KRITIK, MATRIX oder PLAN.',
+      category: 'Analyse',
+      author: 'Vorlage',
+      tags: ['Entscheidung', 'Problemlösung', 'Iterativ'],
+      fields: [
+        frage('problem', 'Was ist das Problem oder die Entscheidung?', 'textarea', 'Leer lassen, wenn du es lieber im Chat beschreibst'),
+        frage('ziel', 'Was möchtest du erreichen?'),
+        frage('kontext', 'Welcher Hintergrund ist wichtig?', 'textarea'),
+        frage('kriterien', 'Woran erkennst du eine gute Lösung?', 'text', 'z. B. Kosten, Aufwand, Wirkung, Risiko'),
+        frage('zeit', 'Wie viel Zeit steht zur Verfügung?'),
+        frage('budget', 'Welches Budget gibt es?'),
+        frage('format', 'In welcher Form möchtest du die Antwort?')
+      ],
+      template: `Du hilfst mir bei offenen Problemen und Entscheidungen mit mehreren Lösungswegen. Führe mich iterativ zu einer belastbaren Entscheidung oder einem konkreten nächsten Schritt.
 
-Erstelle eine HACCP-Gefahrenanalyse für: {{prozess}}
-Betrieb: {{betrieb}}
-Verwendungszweck: {{zweck}}
-{{#schritte}}
-Bekannte Prozessschritte: {{schritte}}
-{{/schritte}}
+Fehlt entscheidender Kontext, stelle maximal 3 gezielte Rückfragen. Reichen die Angaben aus, beginne direkt. Beziehe neue Nachrichten auf den bisherigen Stand und aktualisiere Annahmen und Empfehlung sichtbar.
+
+Standardantwort
+1. Lage: Problem, Ziel und Kriterien; trenne Fakten, Annahmen und offene Punkte.
+2. Optionen: 2–3 wirklich unterschiedliche Wege mit Nutzen, Aufwand, Risiken und Bedingungen.
+3. Empfehlung: sinnvollste Option oder Testschritt, kurze Begründung, stärkster Einwand und wichtigste Unsicherheit.
+4. Umsetzung: 3–5 Schritte, beginnend mit der nächsten konkreten Handlung; dazu 2–4 beobachtbare Erfolgskriterien.
+
+Steuerung
+MODUS: STANDARD – vollständige Analyse
+MODUS: KRITIK – Empfehlung, Risiken und schwache Annahmen angreifen
+MODUS: ALTERNATIVE – deutlich anderen Lösungsweg entwickeln
+MODUS: MATRIX – Optionen nach meinen Kriterien vergleichen; fehlende Gewichtungen als Annahme markieren
+MODUS: PLAN – Empfehlung in Ablauf, Abhängigkeiten und Kontrollpunkte übersetzen
+MODUS: STATUS – Fakten, Annahmen, Empfehlung und nächsten Schritt knapp zusammenfassen
+MODUS: NEUSTART – bisherigen Problemkontext zurücksetzen
+
+Eingaben und Regeln
+Optional: PROBLEM | ZIEL | KONTEXT | KRITERIEN | ZEIT | BUDGET | FORMAT
+- Begründe knapp; gib keine langen internen Gedankengänge aus.
+- Erfinde keine Fakten, Zahlen oder Quellen. Markiere Annahmen und prüfpflichtige aktuelle oder sensible Angaben.
+- Mache bei einer Matrix subjektive Kriterien und Gewichtungen sichtbar.
+- Jede vollständige Analyse endet mit einem konkreten nächsten Schritt.
+
+{{#problem}}
+PROBLEM: {{problem}}
+{{/problem}}
+{{#ziel}}
+ZIEL: {{ziel}}
+{{/ziel}}
+{{#kontext}}
+KONTEXT: {{kontext}}
+{{/kontext}}
+{{#kriterien}}
+KRITERIEN: {{kriterien}}
+{{/kriterien}}
+{{#zeit}}
+ZEIT: {{zeit}}
+{{/zeit}}
+{{#budget}}
+BUDGET: {{budget}}
+{{/budget}}
+{{#format}}
+FORMAT: {{format}}
+{{/format}}
+
+Wenn noch kein Problem vorliegt, frage danach. Sonst beginne direkt.`,
+      createdAt: STAND,
+      updatedAt: STAND
+    },
+    {
+      id: 'vorlage-text-ueberarbeiten',
+      title: 'Text überarbeiten',
+      description: 'Macht einen Text klarer, kürzer oder passender für die Zielgruppe und erklärt die wichtigsten Änderungen.',
+      category: 'Schreiben',
+      author: 'Vorlage',
+      tags: ['Text', 'Korrektur'],
+      fields: [
+        frage('text', 'Welchen Text soll die KI überarbeiten?', 'textarea', 'Text hier einfügen', true),
+        frage('ziel', 'Was soll besser werden?', 'textarea', 'z. B. kürzer, verständlicher, freundlicher, fehlerfrei'),
+        frage('zielgruppe', 'Wer liest den Text?')
+      ],
+      template: `Du bist eine erfahrene Fachperson für Lektorat und verständliches Schreiben.
+
+Überarbeite den folgenden Text.
+{{#ziel}}
+Was besser werden soll: {{ziel}}
+{{/ziel}}
+{{#zielgruppe}}
+Zielgruppe: {{zielgruppe}}
+{{/zielgruppe}}
 
 Vorgehen:
-1. Stelle die Prozessschritte als Fliessdiagramm dar{{#schritte}} und ergänze fehlende Schritte{{/schritte}}.
-2. Analysiere pro Schritt die biologischen, chemischen und physikalischen Gefahren.
-3. Bestimme die kritischen Kontrollpunkte (CCP) mit dem Entscheidungsbaum und begründe jeden Entscheid.
-4. Lege für jeden CCP Grenzwert, Überwachung (wer, wie, wie oft), Korrekturmassnahme und Dokumentation fest.
-5. Gib das Ergebnis als Tabelle aus.
+1. Behalte Inhalt und Aussage bei und erfinde nichts dazu.
+2. Liefere zuerst die überarbeitete Fassung.
+3. Nenne danach die wichtigsten Änderungen in höchstens fünf Punkten mit kurzer Begründung.
+4. Ist etwas unklar oder mehrdeutig, frage nach.
 
-Stütze dich auf das Schweizer Lebensmittelrecht (insbesondere die Hygieneverordnung des EDI, HyV) und die Branchenleitlinie GVG (Gute Verfahrenspraxis im Gastgewerbe). Weise darauf hin, wo betriebsspezifische Werte geprüft werden müssen.
-Schreibe in Schweizer Rechtschreibung (kein ß).`,
-    createdAt: '2026-10-04T08:00:00.000Z',
-    updatedAt: '2026-10-04T08:00:00.000Z'
-  },
-  {
-    id: 'beispiel-feedback',
-    title: 'Feedback zu einer Arbeit',
-    description: 'Formuliert ein wertschätzendes, klares schriftliches Feedback mit Stärken, Verbesserungen und Ausblick.',
-    category: 'Kommunikation',
-    author: 'Vorlage',
-    tags: ['Feedback', 'Bewertung'],
-    fields: [
-      { key: 'arbeit', label: 'Zu welcher Arbeit?', type: 'text', required: true, placeholder: 'z. B. Semesterarbeit zur Menüplanung', default: '' },
-      { key: 'staerken', label: 'Was ist gut gelungen?', type: 'textarea', required: true, placeholder: 'Stichworte genügen', default: '' },
-      { key: 'verbesserung', label: 'Was muss besser werden?', type: 'textarea', required: true, placeholder: 'Stichworte genügen', default: '' },
-      { key: 'note', label: 'Gibt es eine Note oder Bewertung?', type: 'text', required: false, placeholder: 'z. B. 4.5', default: '' },
-      { key: 'ton', label: 'Welcher Ton?', type: 'select', required: true, placeholder: '', default: 'ermutigend', options: ['ermutigend', 'sachlich', 'direkt und klar'] },
-      { key: 'anrede', label: 'Du oder Sie?', type: 'select', required: true, placeholder: '', default: 'Du', options: ['Du', 'Sie'] }
-    ],
-    template: `Du bist eine wertschätzende und klare Lehrperson.
+Text:
+"""
+{{text}}
+"""`,
+      createdAt: STAND,
+      updatedAt: STAND
+    },
+    {
+      id: 'vorlage-thema-erklaeren',
+      title: 'Thema verständlich erklären',
+      description: 'Erklärt ein Thema Schritt für Schritt, mit Beispiel, Vergleich, typischen Missverständnissen und Kontrollfragen.',
+      category: 'Didaktik',
+      author: 'Vorlage',
+      tags: ['Erklären', 'Lernen'],
+      fields: [
+        frage('thema', 'Was soll erklärt werden?', 'text', '', true),
+        frage('fuerwen', 'Für wen ist die Erklärung, und was weiss diese Person schon?', 'textarea'),
+        frage('zweck', 'Wofür wird die Erklärung gebraucht?', 'text', 'z. B. Einstieg in den Unterricht, Prüfungsvorbereitung')
+      ],
+      template: `Erkläre mir folgendes Thema so, dass es wirklich verständlich wird: {{thema}}
+{{#fuerwen}}
+Für wen: {{fuerwen}}
+{{/fuerwen}}
+{{#zweck}}
+Wofür: {{zweck}}
+{{/zweck}}
 
-Formuliere ein schriftliches Feedback zu folgender Arbeit: {{arbeit}}
+Aufbau:
+1. Kernaussage in zwei bis drei Sätzen.
+2. Erklärung Schritt für Schritt; Fachbegriffe beim ersten Auftreten kurz erklären.
+3. Ein konkretes Beispiel und ein passender Vergleich aus dem Alltag.
+4. Häufige Missverständnisse.
+5. Drei Kontrollfragen mit Lösungen.
 
-Stärken: {{staerken}}
-Verbesserungspunkte: {{verbesserung}}
-{{#note}}
-Bewertung: {{note}}. Begründe sie nachvollziehbar.
-{{/note}}
+Passe Tiefe und Sprache an die Zielperson an. Fehlen dafür wichtige Angaben, frage zuerst nach.`,
+      createdAt: STAND,
+      updatedAt: STAND
+    },
+    {
+      id: 'vorlage-unterricht-planen',
+      title: 'Unterricht oder Workshop planen',
+      description: 'Plant eine Unterrichtssequenz oder einen Workshop mit Lernzielen, Einstieg, Ablauf als Tabelle und Lernkontrolle.',
+      category: 'Didaktik',
+      author: 'Vorlage',
+      tags: ['Planung', 'Unterricht'],
+      fields: [
+        frage('thema', 'Zu welchem Thema?', 'text', '', true),
+        frage('zielgruppe', 'Für wen?'),
+        frage('dauer', 'Wie viel Zeit steht zur Verfügung?'),
+        frage('ziele', 'Was sollen die Teilnehmenden danach können?', 'textarea'),
+        frage('rahmen', 'Gibt es Rahmenbedingungen?', 'textarea', 'z. B. Raum, Gruppengrösse, Material, Vorwissen')
+      ],
+      template: `Du bist eine erfahrene Fachperson für Didaktik und Erwachsenenbildung.
 
-Aufbau: zuerst konkrete Stärken, dann höchstens drei Verbesserungspunkte mit je einem umsetzbaren Tipp, am Schluss ein motivierender Ausblick.
-Ton: {{ton}}. Anrede: {{anrede}}. Höchstens 200 Wörter.
-Schreibe in Schweizer Rechtschreibung (kein ß).`,
-    createdAt: '2026-10-04T08:00:00.000Z',
-    updatedAt: '2026-10-04T08:00:00.000Z'
-  }
-];
+Plane eine Unterrichtssequenz oder einen Workshop zum Thema «{{thema}}».
+{{#zielgruppe}}
+Zielgruppe: {{zielgruppe}}
+{{/zielgruppe}}
+{{#dauer}}
+Zeit: {{dauer}}
+{{/dauer}}
+{{#ziele}}
+Ziele: {{ziele}}
+{{/ziele}}
+{{#rahmen}}
+Rahmenbedingungen: {{rahmen}}
+{{/rahmen}}
+
+Liefere:
+1. Zwei bis vier überprüfbare Lernziele.
+2. Einen aktivierenden Einstieg.
+3. Den Ablauf als Tabelle mit Zeit, Phase, Inhalt, Methode, Sozialform und Material.
+4. Eine kurze Lernkontrolle zum Schluss.
+5. Je eine Idee für schnellere und für langsamere Teilnehmende.
+
+Fehlen wichtige Angaben wie Zielgruppe, Zeit oder Ziele, frage zuerst nach.`,
+      createdAt: STAND,
+      updatedAt: STAND
+    },
+    {
+      id: 'vorlage-nachricht-formulieren',
+      title: 'E-Mail oder Nachricht formulieren',
+      description: 'Formuliert eine klare, kurze Nachricht mit Betreffzeile und eindeutigem nächsten Schritt.',
+      category: 'Kommunikation',
+      author: 'Vorlage',
+      tags: ['E-Mail', 'Nachricht'],
+      fields: [
+        frage('empfaenger', 'An wen geht die Nachricht?'),
+        frage('anliegen', 'Worum geht es?', 'textarea', '', true),
+        frage('wichtig', 'Was muss unbedingt drinstehen?', 'textarea'),
+        frage('ton', 'Welcher Ton passt?', 'text', 'z. B. freundlich, sachlich, formell; Du oder Sie')
+      ],
+      template: `Formuliere eine E-Mail{{#empfaenger}} an {{empfaenger}}{{/empfaenger}}.
+
+Anliegen: {{anliegen}}
+{{#wichtig}}
+Muss unbedingt vorkommen: {{wichtig}}
+{{/wichtig}}
+{{#ton}}
+Ton: {{ton}}
+{{/ton}}
+
+Halte die Nachricht kurz und klar gegliedert, mit einer eindeutigen Bitte oder einem nächsten Schritt am Schluss. Schlage zusätzlich eine passende Betreffzeile vor. Fehlt etwas Wichtiges, frage nach, statt etwas zu erfinden.`,
+      createdAt: STAND,
+      updatedAt: STAND
+    },
+    {
+      id: 'vorlage-zusammenfassen',
+      title: 'Text oder Dokument zusammenfassen',
+      description: 'Fasst einen Text mit klarem Fokus zusammen: Kernaussage, wichtigste Punkte, Lücken und Konsequenzen.',
+      category: 'Analyse',
+      author: 'Vorlage',
+      tags: ['Zusammenfassung', 'Dokument'],
+      fields: [
+        frage('text', 'Welcher Text?', 'textarea', 'Text einfügen oder leer lassen und das Dokument im Chat anhängen'),
+        frage('fokus', 'Worauf soll die Zusammenfassung achten?', 'textarea'),
+        frage('leser', 'Für wen ist die Zusammenfassung?'),
+        frage('umfang', 'Wie lang darf sie sein?')
+      ],
+      template: `Fasse den folgenden Text zusammen{{#leser}} für {{leser}}{{/leser}}.
+{{#fokus}}
+Fokus: {{fokus}}
+{{/fokus}}
+{{#umfang}}
+Umfang: {{umfang}}
+{{/umfang}}
+
+Gliederung:
+1. Kernaussage in einem Satz.
+2. Die wichtigsten Punkte als kurze Liste.
+3. Offene Fragen, Widersprüche oder Lücken.
+4. Was daraus konkret folgt.
+
+Halte dich strikt an den Inhalt und kennzeichne eigene Einschätzungen als solche.
+
+{{#text}}
+Text:
+"""
+{{text}}
+"""
+{{/text}}
+{{^text}}
+Der Text ist angehängt oder folgt in meiner nächsten Nachricht.
+{{/text}}`,
+      createdAt: STAND,
+      updatedAt: STAND
+    }
+  ];
+})();

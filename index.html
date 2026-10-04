@@ -14,7 +14,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <div id="demoBanner" class="banner" hidden>
@@ -86,12 +86,12 @@
   <!-- Prompt nutzen -->
   <dialog id="useDialog" class="dlg dlg-wide" aria-labelledby="useTitle">
     <header class="dlg-head">
+      <div class="dlg-nav"><button type="button" class="back-btn" data-close aria-label="Zurück zur Übersicht"><i data-icon="back"></i>Zurück</button></div>
       <div class="dlg-head-main">
         <div id="useMeta" class="use-meta"></div>
         <h2 id="useTitle"></h2>
         <p id="useDesc" class="muted dlg-sub"></p>
       </div>
-      <button type="button" class="icon-btn" data-close aria-label="Schliessen"><i data-icon="x"></i></button>
     </header>
     <div class="dlg-body use-body">
       <section>
@@ -122,8 +122,8 @@
   <dialog id="editDialog" class="dlg dlg-xl" aria-labelledby="editHeading">
     <form id="editForm" class="dlg-form" novalidate>
       <header class="dlg-head">
+        <div class="dlg-nav"><button type="button" class="back-btn" data-close aria-label="Zurück zur Übersicht"><i data-icon="back"></i>Zurück</button></div>
         <h2 id="editHeading">Prompt bearbeiten</h2>
-        <button type="button" class="icon-btn" data-close aria-label="Schliessen"><i data-icon="x"></i></button>
       </header>
       <div class="dlg-body edit-body">
         <div class="edit-col">
@@ -268,10 +268,10 @@
     </form>
   </dialog>
 
-  <script src="config.js?v=2"></script>
-  <script src="engine.js?v=2"></script>
-  <script src="beispiele.js?v=2"></script>
-  <script src="store.js?v=2"></script>
-  <script src="app.js?v=2"></script>
+  <script src="config.js?v=3"></script>
+  <script src="engine.js?v=3"></script>
+  <script src="beispiele.js?v=3"></script>
+  <script src="store.js?v=3"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
